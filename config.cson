@@ -1,0 +1,42 @@
+"*":
+  "atom-beautify":
+    general:
+      _analyticsUserId: "70a19e8a-73ba-4e74-a6c5-9a2bd9b858a9"
+  "atom-material-ui":
+    fonts:
+      fontSize: 15
+    tabs:
+      compactTabs: true
+    treeView:
+      compactList: true
+    ui:
+      panelContrast: true
+      panelShadows: true
+  "autocomplete-plus":
+    enableAutoConfirmSingleSuggestion: false
+  core:
+    disabledPackages: [
+      "linter-rubocop"
+      "markdown-preview"
+    ]
+    openEmptyEditorOnStart: false
+    projectHome: "/Users/ryancobb/Projects"
+    themes: [
+      "nucleus-dark-ui"
+      "one-dark-syntax"
+    ]
+  editor:
+    fontFamily: "Hack"
+    fontSize: 12
+    scrollPastEnd: true
+    showIndentGuide: true
+  "exception-reporting":
+    userId: "1151bf2a-a4cf-9f89-3035-60aa124f928a"
+  "linter-rubocop":
+    command: "/Users/ryancobb/.rbenv/shims/rubocop"
+  "project-manager":
+    includeGitRepositories: true
+  "tree-view":
+    hideIgnoredNames: true
+  welcome:
+    showOnStartup: false

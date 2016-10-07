@@ -1,0 +1,26 @@
+{
+    "data": [
+        {
+            "created_at": 1438828991,
+            "created_by": {
+                "email": "grace@example.com",
+                "name": "Grace Hopper",
+                "id": "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9"
+            },
+            "default_environment_id": "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
+            "description": "An internal API!",
+            "name": "My Service",
+            "id": "9b47981a-98fd-4dac-8f32-c05aa60b8caf",
+            "last_run": {
+                "id": "2oiwnds3",
+                "status": 200,
+                "environment_name": "SAND"
+            },
+            "trigger_url": "http://api.runscope.com/radar/9b47981a-98fd-4dac-8f32-c05aa60b8caf/trigger"
+        }
+  ],
+    "error": null,
+    "meta": {
+        "status": "success"
+    }
+}

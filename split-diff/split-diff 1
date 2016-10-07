@@ -1,0 +1,77 @@
+module MX
+  module Runscope
+    class Test
+      attr_reader  :id, :name
+      attr_accessor :last_run_environment, :last_run_id, :last_run_status, :trigger_url
+
+      class << self
+        def find(bucket_id, id)
+          response = client.get("https://api.runscope.com/buckets/#{bucket_id}/tests/#{id}")
+
+          new(::JSON.parse(response.body)["data"])
+        end
+
+        def where(conditions)
+          bucket_id = conditions.fetch(:bucket_id)
+
+          response = client.get("https://api.runscope.com/buckets/#{bucket_id}/tests")
+
+          tests = ::JSON.parse(response.body)["data"].map do |test_attributes|
+            new(test_attributes)
+          end
+
+          if conditions.key?(:rails_env)
+            rails_env = conditions.fetch(:rails_env)
+
+            tests = filter_by_env(tests, bucket_id, rails_env)
+          end
+          tests
+        end
+
+      private
+
+        def client
+          ::MX::Runscope.client
+        end
+
+        def filter_by_env(tests, bucket_id, env)
+          threads = []
+          matched_env = ::MX::Runscope::Environment.runscope_map(env, bucket_id)
+
+          tests.each do |test|
+            threads << Thread.new(test) do |threaded_test|
+
+              unless matched_env.nil?
+                latest_result = ::MX::Runscope::Result.where(:bucket_id => bucket_id, :test_id => threaded_test.id, :runscope_env => matched_env.name).max_by(&:started_at)
+                threaded_test.trigger_url = "#{test.trigger_url}?runscope_environment=#{matched_env.id}"
+
+                if latest_result.nil?
+                  threaded_test.last_run_status      = ""
+                  threaded_test.last_run_environment = ""
+                  threaded_test.last_run_id          = ""
+                else
+                  threaded_test.last_run_status      = latest_result.result
+                  threaded_test.last_run_environment = latest_result.environment_name
+                  threaded_test.last_run_id          = latest_result.test_run_id
+                end
+              end
+            end
+            threads.each(&:join)
+          end
+          tests
+        end
+      end
+
+      def initialize(attributes={})
+        @name = attributes["name"]
+        @trigger_url = attributes["trigger_url"]
+        @id = attributes["id"]
+        if attributes["last_run"]
+          @last_run_id = attributes["last_run"]["id"]
+          @last_run_status = attributes["last_run"]["status"]
+          @last_run_environment = attributes["last_run"]["environment_name"]
+        end
+      end
+    end
+  end
+end
